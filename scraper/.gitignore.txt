@@ -1,2 +1,0 @@
-scraper-proxy-EC2
-soled-scraper-AMI-key
