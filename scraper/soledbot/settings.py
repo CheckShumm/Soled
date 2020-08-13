@@ -11,6 +11,7 @@ commonly used. You can find more settings consulting the documentation:
 
 '''
 
+
 BOT_NAME = 'soledbot'
 SPIDER_MODULES = ['soledbot.spiders']
 NEWSPIDER_MODULE = 'soledbot.spiders'
@@ -22,21 +23,40 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ROBOTSTXT_OBEY = True
 
 # Delay between requests sent by a spider
+# The download delay setting will honor only one of:
+#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+#CONCURRENT_REQUESTS_PER_IP = 16
 DOWNLOAD_DELAY = 3.0
 
 # disable to prevent bot tracking (some websites might not allow this)
 COOKIES_ENABLED = False 
 
-# Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 16 # Ddefault 16
 
-# Configure a delay for requests for the same website (default: 0)
-# See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
-# See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
-# The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+
+###################### PROXY SETTINGS ######################
+
+# Retry many times since proxies often fail
+RETRY_TIMES = 10
+
+# Retry on most error codes since proxies fail for different reasons
+RETRY_HTTP_CODES = [500, 503, 504, 400, 403, 404, 408]
+
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
+    'scrapy_proxies.RandomProxy': 100,
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
+}
+
+# Format http://host1:port
+PROXY_LIST = './proxy/proxy_list.txt'
+
+
+# Proxy mode
+# 0 = Every requests have different proxy
+# 1 = Take only one proxy from the list and assign it to every requests
+# 2 = Put a custom proxy to use in the settings
+PROXY_MODE = 0
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False

@@ -27,45 +27,47 @@ class SpiderStockX(scrapy.Spider):
                 "ERROR MESSAGE" : response.text
             }
 
-        items_string = scripts[-1].string
-        start = items_string.find('[')
-        items_string = items_string[start::]
-        items_string = items_string.split("}}}")
+        products = response.xpath('//div[@id="products-container"]').get(default=None)
+        print(products)
+        # items_string = scripts[-1].string
+        # start = items_string.find('[')
+        # items_string = items_string[start::]
+        # items_string = items_string.split("}}}")
 
-        keys = [
-            "name",
-            "description",
-            "lowPrice",
-            "highPrice",
-            "url"
-        ]
+        # keys = [
+        #     "name",
+        #     "description",
+        #     "lowPrice",
+        #     "highPrice",
+        #     "url"
+        # ]
 
-        items = list()
+        # items = list()
 
-        for item_string in items_string[:-1]:
-            item = dict()
-            for key in keys:
-                data = item_string
-                data = data[data.find(key)::]
-                data = data[data.find(':')+1::]
-                data = data[:data.find(",\"")]
-                item[key] = data
-            items.append(item)
+        # for item_string in items_string[:-1]:
+        #     item = dict()
+        #     for key in keys:
+        #         data = item_string
+        #         data = data[data.find(key)::]
+        #         data = data[data.find(':')+1::]
+        #         data = data[:data.find(",\"")]
+        #         item[key] = data
+        #     items.append(item)
         
-        for item in items:
-            yield {
-                "name": item["name"], "price": item["lowPrice"], "url": item["url"],
-            }
+        # for item in items:
+        #     yield {
+        #         "name": item["name"], "price": item["lowPrice"], "url": item["url"],
+        #     }
 
-        # store url as visited
-        self.visited.add(response.url)
+        # # store url as visited
+        # self.visited.add(response.url)
 
-        # find all links leading to a sneaker page
-        next_url_list = response.xpath('//a[contains(@href, "/sneakers?page")]/@href').getall()
+        # # find all links leading to a sneaker page
+        # next_url_list = response.xpath('//a[contains(@href, "/sneakers?page")]/@href').getall()
 
-        # iterate and visit through all non-visited links
-        for url in next_url_list:
-            if url in self.visited:
-                continue
+        # # iterate and visit through all non-visited links
+        # for url in next_url_list:
+        #     if url in self.visited:
+        #         continue
 
-            yield scrapy.Request(response.urljoin(url))
+        #     yield scrapy.Request(response.urljoin(url))
